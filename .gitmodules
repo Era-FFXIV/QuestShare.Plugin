@@ -1,0 +1,3 @@
+[submodule "QuestShare.Common"]
+	path = QuestShare.Common
+	url = https://github.com/Era-FFXIV/QuestShare.Common.git

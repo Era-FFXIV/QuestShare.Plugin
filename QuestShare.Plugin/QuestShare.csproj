@@ -21,4 +21,7 @@
   <ItemGroup>
     <Folder Include="Addons\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QuestShare.Common\QuestShare.Common\QuestShare.Common.csproj" />
+  </ItemGroup>
 </Project>

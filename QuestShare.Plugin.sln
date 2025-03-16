@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestShare", "QuestShare.Plugin\QuestShare.csproj", "{69848924-D4E7-4FCA-9DF6-160E77C80201}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestShare.Common", "QuestShare.Common\QuestShare.Common\QuestShare.Common.csproj", "{BE0E6CF6-63AA-4F44-A987-53B6D5597187}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{69848924-D4E7-4FCA-9DF6-160E77C80201}.Debug|x64.Build.0 = Debug|x64
 		{69848924-D4E7-4FCA-9DF6-160E77C80201}.Release|x64.ActiveCfg = Release|x64
 		{69848924-D4E7-4FCA-9DF6-160E77C80201}.Release|x64.Build.0 = Release|x64
+		{BE0E6CF6-63AA-4F44-A987-53B6D5597187}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BE0E6CF6-63AA-4F44-A987-53B6D5597187}.Debug|x64.Build.0 = Debug|Any CPU
+		{BE0E6CF6-63AA-4F44-A987-53B6D5597187}.Release|x64.ActiveCfg = Release|Any CPU
+		{BE0E6CF6-63AA-4F44-A987-53B6D5597187}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
