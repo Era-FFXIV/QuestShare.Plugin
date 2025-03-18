@@ -514,10 +514,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.TextUnformatted("If you need help, please visit the Dalamud Discord server and ask in the appropriate channel under plugin-help-forum.");
                 ImGui.TextUnformatted("Discord: ");
                 ImGui.SameLine();
-                ImGui.TextUnformatted("<insert link here>");
+                ImGui.TextUnformatted("https://discord.gg/AdQWDjUQRA");
                 if (ImGui.IsItemClicked())
                 {
-                    ImGui.SetClipboardText("");
+                    OpenUrl("https://discord.gg/AdQWDjUQRA");
                 }
                 ImGui.TextUnformatted("GitHub: ");
                 ImGui.SameLine();
