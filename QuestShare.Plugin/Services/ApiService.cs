@@ -39,6 +39,7 @@ namespace QuestShare.Services
                 } else
                 {
                     Log.Error("Failed to reconnect after 3 attempts, giving up.");
+                    UiService.LastErrorMessage = "Failed to reconnect to the server.";
                 }
             };
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -115,18 +116,12 @@ namespace QuestShare.Services
             {
                 if (IsConnected) await ApiConnection.StopAsync();
                 isDisposing = false;
-                await ApiConnection.StartAsync().ContinueWith(task =>
+                await Framework.RunOnTick(async () =>
                 {
-                    if (task.IsFaulted)
-                    {
-                        Log.Error("Failed to connect to socket server");
-                    }
-                    else
-                    {
-                        Log.Information("Connected to socket server");
-                        retryCount = 0;
-                    }
+                    await ApiConnection.StartAsync();
+                    retryCount = 0;
                 });
+                
             }
             catch (Exception ex)
             {

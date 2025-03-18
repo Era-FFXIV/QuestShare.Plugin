@@ -29,12 +29,20 @@ namespace QuestShare.Services
                     Log.Debug($"Party member {member.Name.TextValue} - {member.ContentId}");
                     PartyMembers.Add(member.ContentId);
                 }
+                if (HostService.IsHost)
+                {
+                    HostService.UpdateParty();
+                }
             }
             else if (PartyList.Length == 0 && PartyId != 0)
             {
                 PartyId = 0;
                 Log.Debug($"Left party");
                 PartyMembers.Clear();
+                if (HostService.IsHost)
+                {
+                    HostService.UpdateParty();
+                }
             }
             else if (PartyList.Length != PartyMembers.Count)
             {
@@ -49,6 +57,10 @@ namespace QuestShare.Services
                 {
                     Log.Debug($"Party member left {member}");
                     PartyMembers.Remove(member);
+                }
+                if (HostService.IsHost)
+                {
+                    HostService.UpdateParty();
                 }
             }
         }

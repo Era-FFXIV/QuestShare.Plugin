@@ -36,7 +36,7 @@ public class MainWindow : Window, IDisposable
     private HostService HostService => (HostService)Plugin.GetService<HostService>();
 
     private GameQuest? selectedQuest = GameQuestManager.GetActiveQuest();
-    
+
     private enum ActiveTab
     {
         Host,
@@ -66,7 +66,10 @@ public class MainWindow : Window, IDisposable
             }
         }
         ImGui.EndDisabled();
-        //  ImGui.SameLine();
+        ImGui.SameLine();
+        // draw on right side of window
+        ImGui.SetCursorPosX(ImGui.GetWindowWidth() - 50);
+        DrawSupportButton();
         ImGui.Separator();
         using (ImRaii.TabBar("MainTabBar", ImGuiTabBarFlags.NoCloseWithMiddleMouseButton))
         {
@@ -192,7 +195,7 @@ public class MainWindow : Window, IDisposable
                 GameQuestManager.LoadQuests();
             }
             ImGui.EndDisabled();
-            
+
             // add a line of space
             ImGui.TextUnformatted(" ");
             if (selectedQuest == null && GameQuestManager.GetActiveQuest() == null)
@@ -299,7 +302,7 @@ public class MainWindow : Window, IDisposable
         {
             var questInfo = GameQuestManager.GetQuestById((uint)activeQuest);
             var steps = questInfo.QuestSteps;
-            
+
             ImGui.TextUnformatted(questInfo.QuestData.Name.ExtractText());
             ImGui.Separator();
             for (var i = 0; i < steps.Count; i++)
@@ -336,7 +339,8 @@ public class MainWindow : Window, IDisposable
             {
                 ImGui.SetTooltip("Teleports to nearest aetheryte of quest destination.");
             }*/
-        } else
+        }
+        else
         {
             ImGui.TextUnformatted("No active quest.");
         }
@@ -401,8 +405,8 @@ public class MainWindow : Window, IDisposable
                 ImGui.TextUnformatted("Add a new API server configuration.");
                 ImGui.InputText("Display Name", ref newServerDisplayName, 64);
                 ImGui.InputText("URL", ref newServerUrl, 200);
-                ImGui.TextUnformatted("Note: The URL should be the full URL to the hub endpoint and MUST be ws:// or wss:// (preferred)");
-                bool isValid = Uri.TryCreate(newServerUrl, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeWs || uriResult.Scheme == Uri.UriSchemeWss);
+                ImGui.TextUnformatted("Note: The URL should be the full URL to the hub endpoint and MUST be http:// or https:// (preferred)");
+                bool isValid = Uri.TryCreate(newServerUrl, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
                 ImGui.BeginDisabled(!isValid || string.IsNullOrEmpty(newServerDisplayName) || string.IsNullOrEmpty(newServerUrl));
                 if (ImGui.Button("Save"))
                 {
@@ -488,5 +492,49 @@ public class MainWindow : Window, IDisposable
         var result = ImGuiComponents.ToggleButton(label, ref v);
         ImGuiComponents.HelpMarker(helpText);
         return result;
+    }
+
+    private static void DrawSupportButton()
+    {
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.QuestionCircle))
+        {
+            ImGui.OpenPopup("Support");
+        }
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Need help? Click here to get support.");
+        }
+        var center = ImGui.GetMainViewport().GetCenter();
+        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
+        var open = true;
+        using (var support = ImRaii.PopupModal("Support", ref open, ImGuiWindowFlags.AlwaysAutoResize))
+        {
+            if (support)
+            {
+                ImGui.TextUnformatted("If you need help, please visit the Dalamud Discord server and ask in the appropriate channel under plugin-help-forum.");
+                ImGui.TextUnformatted("Discord: ");
+                ImGui.SameLine();
+                ImGui.TextUnformatted("<insert link here>");
+                if (ImGui.IsItemClicked())
+                {
+                    ImGui.SetClipboardText("");
+                }
+                ImGui.TextUnformatted("GitHub: ");
+                ImGui.SameLine();
+                ImGui.TextUnformatted("https://github.com/Era-FFXIV/QuestShare.Plugin");
+                if (ImGui.IsItemClicked())
+                {
+                    OpenUrl("https://github.com/Era-FFXIV/QuestShare.Plugin");
+                }
+                if (ImGui.Button("Close"))
+                {
+                    ImGui.CloseCurrentPopup();
+                }
+            }
+        }
+    }
+    private static void OpenUrl(string url)
+    {
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
     }
 }

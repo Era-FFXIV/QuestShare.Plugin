@@ -39,6 +39,7 @@ namespace QuestShare.Services.API
                 {
                     HostService.UpdateParty();
                 }
+                UiService.LastErrorMessage = "";
             }
             else
             {

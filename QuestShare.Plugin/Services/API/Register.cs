@@ -25,10 +25,12 @@ namespace QuestShare.Services.API
             {
                 var host = (HostService)Plugin.GetService<HostService>();
                 host.Start(response.ShareCode);
+                UiService.LastErrorMessage = "";
             }
             else
             {
                 Log.Error("Failed to register as host: {0}", response.Error);
+                UiService.LastErrorMessage = $"Failed to register as host: {response.Error}";
             }
             return Task.CompletedTask;
         }

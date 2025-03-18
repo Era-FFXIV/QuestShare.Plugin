@@ -1,4 +1,6 @@
 using Dalamud.Plugin.Services;
+using Newtonsoft.Json;
+using static QuestShare.Common.Objects;
 
 namespace QuestShare.Services
 {
@@ -82,12 +84,21 @@ namespace QuestShare.Services
 
         public void RemoveSession(Objects.Session session)
         {
-            Sessions.Remove(session);
+            Log.Debug($"Removing session {JsonConvert.SerializeObject(session)}");
+            var existing = Sessions.FirstOrDefault(s => s.ShareCode == session.ShareCode);
+            if (existing != null)
+            {
+                Sessions.Remove(existing);
+            } else
+            {
+                Log.Debug("Session not found");
+            }
             RemoveKnownShareCode(session.ShareCode);
         }
 
         public void RemoveSession(string shareCode)
         {
+            
             var session = Sessions.FirstOrDefault(s => s.ShareCode == shareCode);
             if (session != null)
             {

@@ -53,29 +53,31 @@ namespace QuestShare.Services.API
             }
             else
             {
+                var api = ((ApiService)Plugin.GetService<ApiService>());
                 Log.Error("Failed to authorize: {Error}", response.Error);
                 UiService.LastErrorMessage = $"Failed to authorize: {response.Error}";
-                _ = ((ApiService)Plugin.GetService<ApiService>()).Disconnect();
+                _ = api.Disconnect();
                 if (response.Error == Error.InvalidVersion)
                 {
                     UiService.LastServerMessage = "Invalid version detected, please update the plugin.";
-                    ((ApiService)Plugin.GetService<ApiService>()).IsLockedOut = true;
+                    api.IsLockedOut = true;
                 }
                 else if (response.Error == Error.InvalidToken)
                 {
                     UiService.LastServerMessage = "Invalid token detected, please reauthorize.";
-                    ((ApiService)Plugin.GetService<ApiService>()).IsLockedOut = true;
+                    api.IsLockedOut = true;
                 }
                 else if (response.Error == Error.BannedTooManyBadRequests)
                 {
                     UiService.LastServerMessage = "You are temporarily banned due to too many bad requests.";
-                    ((ApiService)Plugin.GetService<ApiService>()).IsLockedOut = true;
+                    api.IsLockedOut = true;
                 }
                 else if (response.Error == Error.ServerMaintenance)
                 {
                     UiService.LastServerMessage = "Server is currently undergoing maintenance. Please try again later.";
                 }
             }
+            UiService.LastErrorMessage = "";
             return Task.CompletedTask;
         }
     }

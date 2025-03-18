@@ -20,17 +20,18 @@ namespace QuestShare.Services.API
             {
                 var share = (ShareService)Plugin.GetService<ShareService>();
                 share.RemoveSession(response.Session);
+                UiService.LastErrorMessage = "";
             }
             else
             {
-                UiService.LastErrorMessage = "Failed to leave the party.";
+                Log.Error("Failed to leave the party: {0}", response.Error);
+                UiService.LastErrorMessage = $"Failed to leave the party. {response.Error}";
             }
             return Task.CompletedTask;
         }
 
         public static void HandleBroadcast(GroupLeave.GroupLeaveBroadcast broadcast)
         {
-            Log.Debug($"[GroupLeave] {broadcast.Session.OwnerCharacterId} left the party.");
         }
     }
 }

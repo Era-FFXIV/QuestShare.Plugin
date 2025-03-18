@@ -53,9 +53,6 @@ namespace QuestShare.Services
                 SkipPartyCheck = false, 
                 Session = session,
             };
-            Log.Debug($"Hashing {CharacterId} with {shareCode} to get ${session.OwnerCharacterId}");
-            Log.Debug(JsonConvert.SerializeObject(ownedSession));
-            Log.Debug(JsonConvert.SerializeObject(session));
             ApiService.DispatchSessionStart(ownedSession);
         }
 

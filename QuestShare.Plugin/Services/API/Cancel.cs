@@ -23,10 +23,11 @@ namespace QuestShare.Services.API
             {
                 var share = (ShareService)Plugin.GetService<ShareService>();
                 ConfigurationManager.Instance.OwnedSession = null;
+                UiService.LastErrorMessage = "";
             }
             else
             {
-                UiService.LastErrorMessage = "Failed to cancel the party.";
+                UiService.LastErrorMessage = $"Failed to cancel the party. {cancelResponse.Error}";
             }
             return Task.CompletedTask;
         }

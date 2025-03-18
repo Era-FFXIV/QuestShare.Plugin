@@ -28,6 +28,7 @@ namespace QuestShare.Services.API
                 Log.Error("Failed to update quest status: {0}", response.Error);
                 UiService.LastErrorMessage = $"Failed to update quest status. {response.Error}";
             }
+            UiService.LastErrorMessage = "";
             return Task.CompletedTask;
         }
     }
