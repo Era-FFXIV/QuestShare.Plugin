@@ -76,9 +76,9 @@ namespace QuestShare.Services
             isDisposing = true;
             if (IsConnected)
             {
-                ApiConnection.StopAsync();
+                ApiConnection.StopAsync().ConfigureAwait(false);
             }
-            ApiConnection.DisposeAsync();
+            ApiConnection.DisposeAsync().ConfigureAwait(false);
             ClientState.Login -= OnLogin;
             ClientState.Logout -= OnLogout;
             Framework.Update -= SavePersistedConfig;
