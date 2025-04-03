@@ -2,10 +2,8 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel;
-using Lumina.Excel.Sheets;
 using Lumina.Extensions;
 using Newtonsoft.Json;
 using QuestShare.Services;
@@ -26,7 +24,7 @@ namespace QuestShare.Common
             ClientState.Logout += OnLogout;
             if (GameQuests.Count == 0)
             {
-                LoadQuests();
+                Task.Run(LoadQuests);
             }
             Framework.Update += OnFrameworkUpdate;
         }
@@ -86,7 +84,7 @@ namespace QuestShare.Common
         {
             var api = (ApiService)Plugin.GetService<ApiService>();
             var share = (ShareService)Plugin.GetService<ShareService>();
-            if (ConfigurationManager.Instance.TrackMSQ)
+            if (ConfigurationManager.Instance.AutoShareMsq)
             {
                 var questId = (uint)AgentScenarioTree.Instance()->Data->CurrentScenarioQuest;
                 if (questId == 0) return false;

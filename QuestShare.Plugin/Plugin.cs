@@ -29,7 +29,8 @@ public sealed class Plugin : IDalamudPlugin
             new ShareService(),
             new PartyService(),
             new UiService(),
-            new HostService()
+            new HostService(),
+            new AddonService()
         ];
         GameQuestManager.Initialize();
         LogStream = new StringWriter();

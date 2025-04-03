@@ -19,7 +19,7 @@ public class MainWindow : Window, IDisposable
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(600, 650),
+            MinimumSize = new Vector2(550, 500),
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
     }
@@ -166,13 +166,32 @@ public class MainWindow : Window, IDisposable
             {
                 HostService.SetIsActive(sendUpdates);
             }
-            var track = Instance.TrackMSQ;
-            if (ToggleButtonWithHelpMarker("Track MSQ", "Automatically track the Main Scenario Quest.", ref track))
+            var autoShareMsq = Instance.AutoShareMsq;
+            var autoShareNewQuests = Instance.AutoShareNewQuests;
+            ImGui.BeginDisabled(autoShareNewQuests);
+            if (ToggleButtonWithHelpMarker("Auto Share MSQ", "Automatically share the Main Scenario Quest with your group when it is accepted.", ref autoShareMsq))
             {
-                Instance.TrackMSQ = track;
+                Instance.AutoShareMsq = autoShareMsq;
+                if (Instance.AutoShareNewQuests)
+                {
+                    Instance.AutoShareNewQuests = false;
+                }
                 Save();
             }
-            ImGui.BeginDisabled(track);
+            ImGui.EndDisabled();
+            
+            ImGui.BeginDisabled(autoShareMsq);
+            if (ToggleButtonWithHelpMarker("Auto Share New Quests", "Automatically share new quests with your group when they are accepted. Mutually exclusive with MSQ share.", ref autoShareNewQuests))
+            {
+                Instance.AutoShareNewQuests = autoShareNewQuests;
+                if (Instance.AutoShareMsq)
+                {
+                    Instance.AutoShareMsq = false;
+                }
+                Save();
+            }
+            ImGui.EndDisabled();
+            ImGui.BeginDisabled(autoShareMsq);
             using (var combo = ImRaii.Combo("##Quests", GameQuestManager.GetActiveQuest()?.QuestName ?? "---SELECT---", ImGuiComboFlags.HeightRegular))
             {
                 if (combo)
@@ -458,19 +477,6 @@ public class MainWindow : Window, IDisposable
             Instance.ConnectOnStartup = connectOnStartup;
             Save();
         }
-        var autoShareMsq = Instance.AutoShareMsq;
-        if (ToggleButtonWithHelpMarker("Auto Share MSQ", "Automatically share the Main Scenario Quest with your group when it is accepted.", ref autoShareMsq))
-        {
-            Instance.AutoShareMsq = autoShareMsq;
-            Save();
-        }
-        // TODO: Implement this feature
-        /*var autoShareNewQuests = Instance.AutoShareNewQuests;
-        if (ToggleButtonWithHelpMarker("Auto Share New Quests", "Automatically share new quests with your group when they are accepted.", ref autoShareNewQuests))
-        {
-            Instance.AutoShareNewQuests = autoShareNewQuests;
-            Save();
-        }*/
         var hideFutureStepsHost = Instance.HideFutureStepsHost;
         if (ToggleButtonWithHelpMarker("Hide Future Steps (Host)", "Hides future steps of the quest from the UI when viewing your hosted quest. This does not affect the quest sharing process.", ref hideFutureStepsHost))
         {
