@@ -9,8 +9,6 @@ QuestShare is a Dalamud plugin for FFXIV that allows you to share your quest pro
 
 The plugin is installed through Dalamud's Plugin Installer. **This plugin is currently testing exclusive, so you will have to enable experimental builds in Dalamud to see it**.
 
-(As of this writing, inclusion of the plugin is still pending approval)
-
 ### Usage
 
 The plugin consists of two main parts, the "Host Group" tab and "Join Group" tab.
