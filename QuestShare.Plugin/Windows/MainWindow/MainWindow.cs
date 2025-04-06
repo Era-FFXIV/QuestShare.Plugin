@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using QuestShare.Services;
 using static QuestShare.Common.ConfigurationManager;
 using static QuestShare.Services.ApiService;
+using QuestShare.Windows.MiniWindow;
 
 namespace QuestShare.Windows.MainWindow;
 
@@ -34,7 +35,6 @@ public class MainWindow : Window, IDisposable
     private ShareService ShareService => (ShareService)Plugin.GetService<ShareService>();
     private PartyService PartyService => (PartyService)Plugin.GetService<PartyService>();
     private HostService HostService => (HostService)Plugin.GetService<HostService>();
-
     private GameQuest? selectedQuest = GameQuestManager.GetActiveQuest();
 
     private enum ActiveTab
@@ -301,6 +301,12 @@ public class MainWindow : Window, IDisposable
                 if (tree)
                 {
                     DrawSessionDetails(session);
+                    ImGui.SameLine();
+                    if (ImGui.Button("Show Mini"))
+                    {
+                        UiService.MiniWindow.SetSession(session);
+                        UiService.MiniWindow.Toggle();
+                    }
                     if (ImGui.Button("Leave Group"))
                     {
                         DispatchUngroup(session);
@@ -312,7 +318,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    private void DrawSessionDetails(Objects.Session session)
+    public void DrawSessionDetails(Objects.Session session)
     {
         ImGui.TextUnformatted($"Owner: {ShareService.GetShareCodeOwner(session.ShareCode)}");
         var activeQuest = session.ActiveQuestId;
@@ -349,15 +355,7 @@ public class MainWindow : Window, IDisposable
             {
                 ImGui.SetTooltip("Generates a map marker for the current step's destination.");
             }
-            // ImGui.SameLine();
-            /*if (ImGui.Button("Teleport"))
-            {
-                // attempt to generate a path to the next step
-            }
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.SetTooltip("Teleports to nearest aetheryte of quest destination.");
-            }*/
+            
         }
         else
         {

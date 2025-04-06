@@ -1,5 +1,6 @@
 using Dalamud.Interface.Windowing;
 using QuestShare.Windows.MainWindow;
+using QuestShare.Windows.MiniWindow;
 
 namespace QuestShare.Services
 {
@@ -7,12 +8,14 @@ namespace QuestShare.Services
     {
         public static WindowSystem WindowSystem = new("QuestShare");
         public static MainWindow MainWindow { get; private set; } = new();
+        public static MiniWindow MiniWindow { get; private set; } = new();
         public static string LastErrorMessage { get; set; } = string.Empty;
         public static string LastServerMessage { get; set; } = string.Empty;
 
         public void Initialize()
         {
             WindowSystem.AddWindow(MainWindow);
+            WindowSystem.AddWindow(MiniWindow);
 
             PluginInterface.UiBuilder.Draw += DrawUI;
 
@@ -30,6 +33,7 @@ namespace QuestShare.Services
             PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUI;
             PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUI;
             MainWindow.Dispose();
+            MiniWindow.Dispose();
         }
 
         private static void DrawUI() => WindowSystem.Draw();
