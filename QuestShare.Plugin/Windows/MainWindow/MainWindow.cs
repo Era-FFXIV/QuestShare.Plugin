@@ -264,7 +264,6 @@ public class MainWindow : Window, IDisposable
 
     private string enteredShareCode = "";
     private bool isJoining = false;
-    private bool isLeaving = false;
     private void OnGroupJoin(object? sender, GroupJoinEventArgs args)
     {
         isJoining = false;
@@ -304,13 +303,12 @@ public class MainWindow : Window, IDisposable
                     ImGui.SameLine();
                     if (ImGui.Button("Show Mini"))
                     {
-                        UiService.MiniWindow.SetSession(session);
+                        UiService.MiniWindow.SetSession(session.ShareCode);
                         UiService.MiniWindow.Toggle();
                     }
                     if (ImGui.Button("Leave Group"))
                     {
                         DispatchUngroup(session);
-                        isLeaving = true;
                     }
                 }
 

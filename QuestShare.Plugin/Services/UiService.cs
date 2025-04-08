@@ -33,7 +33,6 @@ namespace QuestShare.Services
             PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUI;
             PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUI;
             MainWindow.Dispose();
-            MiniWindow.Dispose();
         }
 
         private static void DrawUI() => WindowSystem.Draw();

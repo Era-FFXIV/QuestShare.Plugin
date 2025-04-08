@@ -24,12 +24,16 @@ namespace QuestShare.Windows.MiniWindow
             };
         }
 
-        private Objects.Session? Session;
-        private ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
+        private static ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
+        private static ShareService ShareService => (ShareService)Plugin.GetService<ShareService>();
 
-        public void SetSession(Objects.Session session)
+        private string ShareCode = string.Empty;
+        private Objects.Session? Session => ShareService.Sessions.FirstOrDefault(s => s.ShareCode == ShareCode);
+        
+
+        public void SetSession(string shareCode)
         {
-            Session = session;
+            ShareCode = shareCode;
         }
 
         public override void OnOpen()
@@ -40,10 +44,6 @@ namespace QuestShare.Windows.MiniWindow
                 return;
             }
             WindowName = $"{Plugin.Name} - {Session.ShareCode}###MiniWindow";
-        }
-        public override void OnClose()
-        {
-            Session = null;
         }
 
         public override void Draw()
@@ -59,11 +59,6 @@ namespace QuestShare.Windows.MiniWindow
             ImGui.PushTextWrapPos(ImGui.GetContentRegionAvail().X);
             UiService.MainWindow.DrawSessionDetails(Session);
             ImGui.PopTextWrapPos();
-        }
-
-        public void Dispose()
-        {
-            Session = null;
         }
     }
 }
