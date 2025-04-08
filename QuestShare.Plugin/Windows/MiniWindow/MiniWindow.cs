@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface.Windowing;
+﻿using Dalamud.Interface.Colors;
+using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using QuestShare.Services;
 using System;
@@ -24,6 +25,7 @@ namespace QuestShare.Windows.MiniWindow
         }
 
         private Objects.Session? Session;
+        private ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
 
         public void SetSession(Objects.Session session)
         {
@@ -47,8 +49,12 @@ namespace QuestShare.Windows.MiniWindow
         public override void Draw()
         {
             if (Session == null) return;
+            if (!ApiService.IsConnected)
+            {
+                ImGui.TextColored(ImGuiColors.DPSRed, "Not connected to the server, check main window.");
+                return;
+            }
             ImGui.SetWindowSize(new Vector2(300, 300), ImGuiCond.FirstUseEver);
-            ImGui.SetWindowPos(new Vector2(100, 100), ImGuiCond.FirstUseEver);
             // set text wrapping
             ImGui.PushTextWrapPos(ImGui.GetContentRegionAvail().X);
             UiService.MainWindow.DrawSessionDetails(Session);

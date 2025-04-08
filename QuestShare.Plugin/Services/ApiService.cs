@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QuestShare.Services.API;
 using System.Diagnostics;
+using System.Timers;
 
 namespace QuestShare.Services
 {
@@ -15,10 +16,55 @@ namespace QuestShare.Services
         internal bool IsConnected => ApiConnection.State == HubConnectionState.Connected;
         internal bool IsLockedOut { get; set; } = false;
         internal HubConnectionState ConnectionState => ApiConnection.State;
-        private bool isDisposing = false;
+        
         internal static string Token => ConfigurationManager.Instance.Token;
         private readonly List<IAPIHandler> apiHandlers = [];
-        private int retryCount = 0;
+        
+
+        private static System.Timers.Timer? ConnectionManagerTimer = null;
+        private bool WantedConnectionState;
+        private int RetryCount = 0;
+        private DateTime LastConnectionAttempt = DateTime.MinValue;
+
+        private void InitializeConnectionManager()
+        {
+            if (ConnectionManagerTimer == null)
+            {
+                ConnectionManagerTimer = new System.Timers.Timer(5000);
+                ConnectionManagerTimer.Elapsed += OnConnectionManagerTick;
+                ConnectionManagerTimer.AutoReset = true;
+                ConnectionManagerTimer.Enabled = true;
+            }
+        }
+
+        private void OnConnectionManagerTick(object? source, ElapsedEventArgs e)
+        {
+            
+            if (WantedConnectionState && ApiConnection.State == HubConnectionState.Disconnected)
+            {
+                if (RetryCount < 3)
+                {
+                    RetryCount++;
+                    Log.Information($"Attempting to reconnect to {ConfigurationManager.Instance.ApiUrl} (Attempt {RetryCount})");
+                    Task.Run(Connect);
+                }
+                else
+                {
+                    if (LastConnectionAttempt.AddMinutes(5) > DateTime.Now)
+                    {
+                        Log.Debug($"Last connection attempt was less than 5 minutes ago, skipping connection attempt.");
+                        return;
+                    }
+                    Log.Error("Failed to reconnect after 3 attempts, giving up. Retrying in 300 seconds.");
+                    UiService.LastErrorMessage = "Failed to reconnect to the server.";
+                    LastConnectionAttempt = DateTime.Now;
+                }
+            } else
+            {
+                RetryCount = 0;
+                LastConnectionAttempt = DateTime.MinValue;
+            }
+        }
 
         public void Initialize()
         {
@@ -27,28 +73,12 @@ namespace QuestShare.Services
                 logging.SetMinimumLevel(LogLevel.Information).AddConsole();
             });
             ApiConnection = builder.Build();
-            ApiConnection.Closed += async (error) =>
+            WantedConnectionState = ConfigurationManager.Instance.ConnectOnStartup;
+            ApiConnection.Closed += (error) =>
             {
-                if (isDisposing) return;
                 Log.Warning($"Connection closed... {error}");
-                if (retryCount < 3)
-                {
-                    retryCount++;
-                    await Task.Delay(new Random().Next(0, 5) * 1000);
-                    await ApiConnection.StartAsync();
-                } else
-                {
-                    Log.Error("Failed to reconnect after 3 attempts, giving up.");
-                    UiService.LastErrorMessage = "Failed to reconnect to the server.";
-                }
+                return Task.CompletedTask;
             };
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-            ApiConnection.Reconnected += async (error) =>
-            {
-                retryCount = 0;
-                Log.Information("Connection reconnected");
-            };
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
             ApiConnection.On<AuthRequest.Response>(nameof(AuthRequest), AuthRequest_Client.HandleResponse);
             ApiConnection.On<Authorize.Response>(nameof(Authorize), Authorize_Client.HandleResponse);
@@ -65,15 +95,15 @@ namespace QuestShare.Services
 
             ClientState.Login += OnLogin;
             ClientState.Logout += OnLogout;
-            Framework.Update += SavePersistedConfig;
             if (ConfigurationManager.Instance.ConnectOnStartup)
             {
                 Task.Run(Connect);
             }
+            InitializeConnectionManager();
         }
         public void Shutdown()
         {
-            isDisposing = true;
+            WantedConnectionState = false;
             if (IsConnected)
             {
                 ApiConnection.StopAsync().ConfigureAwait(false);
@@ -81,7 +111,9 @@ namespace QuestShare.Services
             ApiConnection.DisposeAsync().ConfigureAwait(false);
             ClientState.Login -= OnLogin;
             ClientState.Logout -= OnLogout;
-            Framework.Update -= SavePersistedConfig;
+            ConnectionManagerTimer?.Stop();
+            ConnectionManagerTimer?.Dispose();
+            ConnectionManagerTimer = null;
         }
 
         public void OnLogin()
@@ -95,12 +127,8 @@ namespace QuestShare.Services
         public void OnLogout(int code, int type)
         {
             ConfigurationManager.Save();
+            WantedConnectionState = false;
             ApiConnection.StopAsync().ConfigureAwait(false);
-        }
-
-        private void SavePersistedConfig(IFramework _)
-        {
-            ConfigurationManager.Instance.Token = Token;
         }
 
         public void OnUrlChange()
@@ -111,15 +139,14 @@ namespace QuestShare.Services
 
         public async Task Connect()
         {
+            if (IsConnected) return;
             Log.Debug($"Attempting to connect to {ConfigurationManager.Instance.ApiUrl}");
             try
             {
-                if (IsConnected) await ApiConnection.StopAsync();
-                isDisposing = false;
                 await Framework.RunOnTick(async () =>
                 {
                     await ApiConnection.StartAsync();
-                    retryCount = 0;
+                    WantedConnectionState = true;
                 });
                 
             }
@@ -131,7 +158,7 @@ namespace QuestShare.Services
 
         public async Task Disconnect()
         {
-            isDisposing = true;
+            WantedConnectionState = false;
             await ApiConnection.StopAsync();
         }
 
@@ -139,8 +166,6 @@ namespace QuestShare.Services
         {
             if (!IsConnected) await Connect();
             Log.Debug($"Invoking {methodName} with {JsonConvert.SerializeObject(request)}");
-            var s = new StackTrace();
-            Log.Debug(s.ToString());
             await ApiConnection.InvokeAsync(methodName, request).ContinueWith(t =>
             {
                 if (t.IsFaulted)

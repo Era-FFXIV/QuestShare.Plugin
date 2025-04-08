@@ -6,6 +6,11 @@ namespace QuestShare.Services.API
     {
         public static void HandleDispatch(Objects.OwnedSession session, List<string> partyMembers, bool broadcast = true)
         {
+            if (ApiService.Token == null)
+            {
+                Log.Error("API Token is null. Cannot update quest status.");
+                return;
+            }
             var api = (ApiService)Plugin.GetService<ApiService>();
             _ = api.Invoke(nameof(Update), new Update.Request
             {
