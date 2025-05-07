@@ -27,7 +27,7 @@ namespace QuestShare.Windows.MiniWindow
         private static ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
         private static ShareService ShareService => (ShareService)Plugin.GetService<ShareService>();
 
-        private string ShareCode = string.Empty;
+        public string ShareCode { get; private set; } = string.Empty;
         private Objects.Session? Session => ShareService.Sessions.FirstOrDefault(s => s.ShareCode == ShareCode);
         
 
