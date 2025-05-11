@@ -10,13 +10,10 @@ public class ConfigurationManager
         public bool ConnectOnStartup { get; set; } = false;
         public bool AutoShareMsq { get; set; } = false;
         public bool AutoShareNewQuests { get; set; } = false;
-
-        [Obsolete("Use AutoShareMsq instead")]
-        [JsonIgnore]
-        public bool TrackMSQ => AutoShareMsq;
         public bool HideFutureStepsHost { get; set; } = true;
         public bool HideFutureStepsMember { get; set; } = false;
         public bool EnableHosting { get; set; } = false;
+        public bool HideStepsInMiniWindow { get; set; } = false;
         public Objects.OwnedSession? OwnedSession { get; set; }
         public List<Objects.ShareCode> KnownShareCodes { get; set; } = [];
         public int ActiveQuestId { get; set; } = 0;

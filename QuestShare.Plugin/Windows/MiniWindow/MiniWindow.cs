@@ -19,7 +19,7 @@ namespace QuestShare.Windows.MiniWindow
         {
             SizeConstraints = new WindowSizeConstraints
             {
-                MinimumSize = new Vector2(200, 200),
+                MinimumSize = new Vector2(200, 100),
                 MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
             };
         }
@@ -57,7 +57,7 @@ namespace QuestShare.Windows.MiniWindow
             ImGui.SetWindowSize(new Vector2(300, 300), ImGuiCond.FirstUseEver);
             // set text wrapping
             ImGui.PushTextWrapPos(ImGui.GetContentRegionAvail().X);
-            UiService.MainWindow.DrawSessionDetails(Session);
+            UiService.MainWindow.DrawSessionDetails(Session, true);
             ImGui.PopTextWrapPos();
         }
     }

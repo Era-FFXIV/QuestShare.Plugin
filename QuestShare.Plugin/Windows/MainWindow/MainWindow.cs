@@ -16,7 +16,7 @@ namespace QuestShare.Windows.MainWindow;
 public class MainWindow : Window, IDisposable
 {
     public MainWindow()
-        : base(Plugin.Name + "###Main", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        : base(Plugin.Name + "###Main", ImGuiWindowFlags.None)
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -316,7 +316,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    public void DrawSessionDetails(Objects.Session session)
+    public void DrawSessionDetails(Objects.Session session, bool isMini = false)
     {
         ImGui.TextUnformatted($"Owner: {ShareService.GetShareCodeOwner(session.ShareCode)}");
         var activeQuest = session.ActiveQuestId;
@@ -337,7 +337,10 @@ public class MainWindow : Window, IDisposable
                 }
                 else
                 {
-                    ImGui.TextUnformatted(questText);
+                    if (!Instance.HideStepsInMiniWindow || !isMini)
+                    {
+                        ImGui.TextUnformatted(questText);
+                    }
                 }
             }
             if (ImGui.Button("Get Marker"))
@@ -483,6 +486,12 @@ public class MainWindow : Window, IDisposable
         if (ToggleButtonWithHelpMarker("Hide Future Steps (Member)", "Hides future steps of the quest from the UI when viewing a shared quest. This does not affect the quest sharing process.", ref hideFutureStepsMember))
         {
             Instance.HideFutureStepsMember = hideFutureStepsMember;
+            Save();
+        }
+        var hideStepsInMiniWindow = Instance.HideStepsInMiniWindow;
+        if (ToggleButtonWithHelpMarker("Hide Steps in Mini Window", "Hides the steps of the quest from the mini window, only showing the current step.", ref hideStepsInMiniWindow))
+        {
+            Instance.HideStepsInMiniWindow = hideStepsInMiniWindow;
             Save();
         }
     }
