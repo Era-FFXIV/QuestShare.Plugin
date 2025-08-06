@@ -4,12 +4,11 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Microsoft.AspNetCore.SignalR.Client;
 using QuestShare.Services;
 using static QuestShare.Common.ConfigurationManager;
 using static QuestShare.Services.ApiService;
-using QuestShare.Windows.MiniWindow;
 
 namespace QuestShare.Windows.MainWindow;
 

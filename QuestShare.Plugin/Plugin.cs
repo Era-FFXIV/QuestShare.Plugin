@@ -3,8 +3,8 @@ global using QuestShare.Common;
 global using QuestShare.Common.API;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using Serilog.Events;
 using QuestShare.Services;
+using Serilog.Events;
 
 namespace QuestShare;
 

@@ -1,6 +1,5 @@
 using Dalamud.Plugin.Services;
 using Newtonsoft.Json;
-using static QuestShare.Common.Objects;
 
 namespace QuestShare.Services
 {

@@ -1,14 +1,8 @@
 ﻿using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 using QuestShare.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static Dalamud.Interface.Windowing.Window;
+using Dalamud.Bindings.ImGui;
 
 namespace QuestShare.Windows.MiniWindow
 {

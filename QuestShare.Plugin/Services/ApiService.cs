@@ -1,10 +1,7 @@
-
-using Dalamud.Plugin.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QuestShare.Services.API;
-using System.Diagnostics;
 using System.Timers;
 
 namespace QuestShare.Services

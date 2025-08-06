@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dalamud.Game.Addon.Lifecycle;
+﻿using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -26,7 +21,10 @@ namespace QuestShare.Services
             {
                 // EventParam: 1 - Accept, 2 - Decline
                 Log.Debug($"AtkEventType: {j.AtkEventType} - EventParam: {j.EventParam} - AtkEvent: {j.AtkEvent} - Data: {j.Data}");
-                var addon = (AtkUnitBase*)args.Addon;
+                
+                var gameAddon = GameGui.GetAddonByName("JournalAccept");
+                if (gameAddon == null) return;
+                var addon = (AtkUnitBase*)gameAddon.Address;
                 if (addon == null) return;
                 var questId = addon->AtkValues[261].UInt;
                 if (questId == 0)
