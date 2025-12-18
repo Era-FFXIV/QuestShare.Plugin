@@ -14,16 +14,16 @@ namespace QuestShare.Services.API
             _ = api.Invoke(nameof(SessionStart), request);
         }
 
-        public static void HandleResponse(SessionStart.Response response)
+        public static unsafe void HandleResponse(SessionStart.Response response)
         {
             if (response.Success)
             {
                 Log.Information("Session started successfully");
                 ConfigurationManager.Instance.OwnedSession = response.Session;
                 // check if hashes match
-                if (response.Session!.OwnerCharacterId != ClientState.LocalContentId.ToString().SaltedHash(response.Session.ShareCode))
+                if (response.Session!.OwnerCharacterId != PlayerState.ContentId.ToString().SaltedHash(response.Session.ShareCode))
                 {
-                    Log.Error($"Mismatched owner character ID! {response.Session!.OwnerCharacterId} != {ClientState.LocalContentId.ToString().SaltedHash(response.Session.ShareCode)}");
+                    Log.Error($"Mismatched owner character ID! {response.Session!.OwnerCharacterId} != {PlayerState.ContentId.ToString().SaltedHash(response.Session.ShareCode)}");
                 }
                 ConfigurationManager.Save();
                 if (GameQuestManager.GetActiveQuest() != null)

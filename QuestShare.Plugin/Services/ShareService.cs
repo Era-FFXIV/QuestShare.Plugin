@@ -78,7 +78,7 @@ namespace QuestShare.Services
                 return;
             }
             Sessions.Add(session);
-            AddKnownShareCode(new Objects.ShareCode() { Code = session.ShareCode, CharacterId = ClientState.LocalContentId.ToString().SaltedHash(session.ShareCode) });
+            AddKnownShareCode(new Objects.ShareCode() { Code = session.ShareCode, CharacterId = PlayerState.ContentId.ToString().SaltedHash(session.ShareCode) });
         }
 
         public void RemoveSession(Objects.Session session)

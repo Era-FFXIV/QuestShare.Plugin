@@ -117,7 +117,7 @@ namespace QuestShare.Common
 
         private static void OnFrameworkUpdate(IFramework framework)
         {
-            if (ClientState.LocalContentId == 0) return;
+            if (PlayerState.ContentId == 0) return;
             TrackMsq();
             var q = GetActiveQuest();
             var api = (ApiService)Plugin.GetService<ApiService>();

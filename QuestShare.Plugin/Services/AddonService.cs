@@ -18,10 +18,7 @@ namespace QuestShare.Services
         private unsafe void JournalAccept_OnPostReceiveEvent(AddonEvent e, AddonArgs args)
         {
             if (args is AddonReceiveEventArgs j)
-            {
-                // EventParam: 1 - Accept, 2 - Decline
-                Log.Debug($"AtkEventType: {j.AtkEventType} - EventParam: {j.EventParam} - AtkEvent: {j.AtkEvent} - Data: {j.Data}");
-                
+            {                
                 var gameAddon = GameGui.GetAddonByName("JournalAccept");
                 if (gameAddon == null) return;
                 var addon = (AtkUnitBase*)gameAddon.Address;

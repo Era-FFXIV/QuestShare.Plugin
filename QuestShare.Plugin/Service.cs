@@ -19,5 +19,6 @@ namespace QuestShare
         [PluginService] internal static IAddonLifecycle AddonLifecycle { get; private set; } = null!;
         [PluginService] internal static IChatGui ChatGui { get; private set; } = null!;
         [PluginService] internal static ITargetManager Target { get; private set; } = null!;
+        [PluginService] internal static IPlayerState PlayerState { get; private set; } = null!;
     }
 }

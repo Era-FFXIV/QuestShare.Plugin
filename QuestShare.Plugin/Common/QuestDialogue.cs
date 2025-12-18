@@ -13,6 +13,10 @@ namespace QuestShare.Common
 
         public ReadOnlySeString Value => row.ReadStringColumn(1);
 
+        public ExcelPage ExcelPage => row.ExcelPage;
+
+        public uint RowOffset => row.RowOffset;
+
         static QuestDialogue IExcelRow<QuestDialogue>.Create(ExcelPage page, uint offset, uint row) =>
             new(new RawRow(page, offset, row));
     }

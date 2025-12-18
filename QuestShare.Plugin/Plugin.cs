@@ -1,6 +1,7 @@
 global using static QuestShare.Service;
 global using QuestShare.Common;
 global using QuestShare.Common.API;
+global using System.IO;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using QuestShare.Services;

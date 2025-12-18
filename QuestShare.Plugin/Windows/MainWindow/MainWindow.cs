@@ -279,7 +279,7 @@ public class MainWindow : Window, IDisposable
         if (isJoining) btn = "Joining...";
         if (ImGui.Button(btn))
         {
-            var payload = new Objects.ShareCode { CharacterId = ClientState.LocalContentId.ToString().SaltedHash(enteredShareCode), Code = enteredShareCode };
+            var payload = new Objects.ShareCode { CharacterId = PlayerState.ContentId.ToString().SaltedHash(enteredShareCode), Code = enteredShareCode };
             isJoining = true;
             ApiService.GroupJoined += OnGroupJoin;
             DispatchGroup(payload);
