@@ -2,9 +2,9 @@ namespace QuestShare.Services.API
 {
     internal class Authorize_Client
     {
-        public static void HandleDispatch()
+        public static unsafe void HandleDispatch()
         {
-            if (ClientState.LocalContentId == 0)
+            if (PlayerState.ContentId == 0)
             {
                 _ = ((ApiService)Plugin.GetService<ApiService>()).Disconnect();
                 return;

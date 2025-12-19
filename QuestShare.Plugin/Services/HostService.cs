@@ -11,34 +11,18 @@ namespace QuestShare.Services
         internal static bool IsActive => Session?.IsActive ?? false;
         internal static bool AllowJoins => Session?.AllowJoins ?? true;
         internal static bool SkipPartyCheck => Session?.SkipPartyCheck ?? false;
-        private ulong CharacterId { get; set; }
 
         public void Initialize()
         {
-            ClientState.Login += OnLogin;
-            ClientState.Logout += OnLogout;
-            CharacterId = ClientState.LocalContentId;
         }
 
         public void Shutdown()
         {
-            ClientState.Login -= OnLogin;
-            ClientState.Logout -= OnLogout;
-        }
-
-        private void OnLogin()
-        {
-            CharacterId = ClientState.LocalContentId;
-        }
-
-        private void OnLogout(int _, int __)
-        {
-            CharacterId = 0;
         }
 
         public void Start(string shareCode)
         {
-            var session = new Objects.Session { OwnerCharacterId = CharacterId.ToString().SaltedHash(shareCode), ShareCode = shareCode, ActiveQuestId = ActiveQuestId, ActiveQuestStep = ActiveQuestStep };
+            var session = new Objects.Session { OwnerCharacterId = PlayerState.ContentId.ToString().SaltedHash(shareCode), ShareCode = shareCode, ActiveQuestId = ActiveQuestId, ActiveQuestStep = ActiveQuestStep };
             var ownedSession = new Objects.OwnedSession { 
                 AllowJoins = true, 
                 IsActive = true, 

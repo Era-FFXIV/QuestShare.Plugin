@@ -32,7 +32,6 @@ public class ConfigurationManager
     }
 
     public static Configuration Instance { get; private set; } = new Configuration();
-    private static ulong LocalContentId = 0;
 
     public ConfigurationManager()
     {
@@ -40,16 +39,14 @@ public class ConfigurationManager
 
         ClientState.Login += OnLogin;
         ClientState.Logout += OnLogout;
-        if (ClientState.LocalContentId != 0)
+        if (PlayerState.ContentId != 0)
         {
-            LocalContentId = ClientState.LocalContentId;
             Load();
         }
     }
 
-    public void OnLogin()
+    public unsafe void OnLogin()
     {
-        LocalContentId = ClientState.LocalContentId;
         Load();
     }
 
@@ -67,9 +64,9 @@ public class ConfigurationManager
 
     public void Load()
     {
-        if (File.Exists(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{LocalContentId}.json")))
+        if (File.Exists(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{PlayerState.ContentId}.json")))
         {
-            var config = File.ReadAllText(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{LocalContentId}.json"));
+            var config = File.ReadAllText(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{PlayerState.ContentId}.json"));
             if (config != null)
             {
                 var deserialized = JsonConvert.DeserializeObject<Configuration>(config);
@@ -79,7 +76,7 @@ public class ConfigurationManager
                 }
                 else
                 {
-                    Log.Error($"Failed to deserialize configuration for {LocalContentId}, using defaults.");
+                    Log.Error($"Failed to deserialize configuration for {PlayerState.ContentId}, using defaults.");
                     Instance = new Configuration();
                     Save();
                 }
@@ -94,7 +91,7 @@ public class ConfigurationManager
     public static void Save()
     {
         Log.Debug("Saving configuration");
-        File.WriteAllText(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{LocalContentId}.json"), JsonConvert.SerializeObject(Instance));
+        File.WriteAllText(Path.Join(PluginInterface.ConfigDirectory.FullName, $"{PlayerState.ContentId}.json"), JsonConvert.SerializeObject(Instance));
         Log.Debug($"Wrote config: {JsonConvert.SerializeObject(Instance)}");
     }
 
