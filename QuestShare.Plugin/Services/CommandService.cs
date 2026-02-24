@@ -70,16 +70,17 @@ namespace QuestShare.Services
                 ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = "No active session. Open the mini window first." });
                 return;
             }
+            byte step = (byte)(activeSession.ActiveQuestStep - 1);
             var questInfo = GameQuestManager.GetQuestById((uint)activeSession.ActiveQuestId);
             if (args.Length > 0)
             {
                 if (args == "flag")
                 {
-                    ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.GetFullMapLink(activeSession.ActiveQuestStep) });
+                    ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.GetFullMapLink(step) });
                 }
                 else if (args == "step")
                 {
-                    ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.QuestSteps[activeSession.ActiveQuestStep] ?? "No active quest." });
+                    ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.QuestSteps[step] ?? "No active quest." });
                 }
                 else
                 {
@@ -88,8 +89,8 @@ namespace QuestShare.Services
             }
             else
             {
-                ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = $"Next Step: {questInfo.QuestSteps[activeSession.ActiveQuestStep] ?? "No active quest."}" });
-                ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.GetFullMapLink(activeSession.ActiveQuestStep) });
+                ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = $"Next Step: {questInfo.QuestSteps[step] ?? "No active quest."}" });
+                ChatGui.Print(new XivChatEntry { Type = XivChatType.Echo, Message = questInfo.GetFullMapLink(step) });
             }
         }
     }
