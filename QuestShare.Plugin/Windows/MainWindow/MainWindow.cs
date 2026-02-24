@@ -30,10 +30,9 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose() { }
 
-    private ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
-    private ShareService ShareService => (ShareService)Plugin.GetService<ShareService>();
-    private PartyService PartyService => (PartyService)Plugin.GetService<PartyService>();
-    private HostService HostService => (HostService)Plugin.GetService<HostService>();
+    private ApiService ApiService => Plugin.GetService<ApiService>();
+    private ShareService ShareService => Plugin.GetService<ShareService>();
+    private PartyService PartyService => Plugin.GetService<PartyService>();
     private GameQuest? selectedQuest = GameQuestManager.GetActiveQuest();
 
     private enum ActiveTab

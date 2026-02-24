@@ -4,7 +4,7 @@ namespace QuestShare.Services.API
     {
         public static void HandleDispatch(Objects.Session session)
         {
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             var request = new GroupLeave.Request
             {
                 Token = ApiService.Token,
@@ -18,7 +18,7 @@ namespace QuestShare.Services.API
         {
             if (response.Success && response.Session != null)
             {
-                var share = (ShareService)Plugin.GetService<ShareService>();
+                var share = Plugin.GetService<ShareService>();
                 share.RemoveSession(response.Session);
                 UiService.LastErrorMessage = "";
             }

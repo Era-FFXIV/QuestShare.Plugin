@@ -9,7 +9,7 @@ namespace QuestShare.Services.API
                 Log.Error("API Token is null. Cannot update quest status.");
                 return;
             }
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             _ = api.Invoke(nameof(Update), new Update.Request
             {
                 Token = ApiService.Token,
@@ -40,7 +40,7 @@ namespace QuestShare.Services.API
     {
         public static Task HandleResponse(Update.UpdateBroadcast response)
         {
-            ((ShareService)Plugin.GetService<ShareService>()).UpdateSession(response.Session);
+            Plugin.GetService<ShareService>().UpdateSession(response.Session);
             return Task.CompletedTask;
         }
     }

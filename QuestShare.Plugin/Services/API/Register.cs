@@ -4,7 +4,7 @@ namespace QuestShare.Services.API
     {
         public static void HandleDispatch()
         {
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             _ = api.Invoke(nameof(Register), new Common.API.Register.Request
             {
                 Version = Constants.Version,
@@ -21,8 +21,7 @@ namespace QuestShare.Services.API
         {
             if (response.Success)
             {
-                var host = (HostService)Plugin.GetService<HostService>();
-                host.Start(response.ShareCode);
+                HostService.Start(response.ShareCode);
                 UiService.LastErrorMessage = "";
             }
             else

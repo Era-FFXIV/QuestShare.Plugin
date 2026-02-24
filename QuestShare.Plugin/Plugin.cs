@@ -5,35 +5,32 @@ global using System.IO;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using QuestShare.Services;
-using Serilog.Events;
 
 namespace QuestShare;
 
 public sealed class Plugin : IDalamudPlugin
 {
     public static string Name => "Quest Share";
-    public static string Version => "1.0.1.0";
+    public static string Version => "1.2.0.0";
     public static string PluginDataPath { get; private set; } = null!;
     internal static ConfigurationManager Configuration { get; private set; } = null!;
-    private static List<IService> Services = [];
+    private static ServiceProvider _serviceProvider = null!;
     internal static StringWriter LogStream { get; private set; } = null!;
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Service>(pluginInterface);
-        // redirect console output to plugin log
+
+        // Initialize configuration
         Configuration = new ConfigurationManager();
-        Services =
-        [
-            new ApiService(),
-            new CommandService(),
-            new ShareService(),
-            new PartyService(),
-            new UiService(),
-            new HostService(),
-            new AddonService()
-        ];
+
+        // Initialize DI container and services
+        _serviceProvider = new ServiceProvider();
+
+        // Initialize game quest manager
         GameQuestManager.Initialize();
+
+        // Setup debug logging
         LogStream = new StringWriter();
 #if DEBUG
         Console.SetOut(LogStream);
@@ -41,20 +38,15 @@ public sealed class Plugin : IDalamudPlugin
 #endif
         Framework.Update += OnFramework;
         Log.Debug($"Token: {ConfigurationManager.Instance.Token}");
-        foreach (var service in Services)
-        {
-            Log.Debug($"Initializing {service.GetType().Name}");
-            service.Initialize();
-        }
     }
 
     public void Dispose()
     {
         LogStream.Dispose();
-        foreach (var service in Services)
-        {
-            service.Shutdown();
-        }
+
+        // Shutdown all services via DI container
+        _serviceProvider?.Dispose();
+        GameQuestManager.Dispose();
         ConfigurationManager.Save();
         ClientState.Login -= Configuration.OnLogin;
         ClientState.Logout -= Configuration.OnLogout;
@@ -62,9 +54,12 @@ public sealed class Plugin : IDalamudPlugin
         Configuration.Dispose();
     }
 
-    internal static IService GetService<T>() where T : IService
+    /// <summary>
+    /// Get a service instance from the DI container.
+    /// </summary>
+    internal static T GetService<T>() where T : class, IService
     {
-        return Services.FirstOrDefault(s => s is T)!;
+        return _serviceProvider.GetService<T>();
     }
 
     private void OnFramework(IFramework framework)

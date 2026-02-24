@@ -1,3 +1,5 @@
+using Dalamud.Game.Text;
+using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
@@ -82,11 +84,11 @@ namespace QuestShare.Common
 
         public unsafe static bool TrackMsq()
         {
-            var api = (ApiService)Plugin.GetService<ApiService>();
-            var share = (ShareService)Plugin.GetService<ShareService>();
+            var api = Plugin.GetService<ApiService>();
+            var share = Plugin.GetService<ShareService>();
             if (ConfigurationManager.Instance.AutoShareMsq)
             {
-                var questId = (uint)AgentScenarioTree.Instance()->Data->CurrentScenarioQuest;
+                var questId = (uint)AgentScenarioTree.Instance()->Data->MainScenarioQuestIds[0];
                 if (questId == 0) return false;
                 else questId += 0x10000U;
                 if (GetActiveQuest() != null && GetActiveQuest()?.QuestId == questId) return false;
@@ -120,7 +122,7 @@ namespace QuestShare.Common
             if (PlayerState.ContentId == 0) return;
             TrackMsq();
             var q = GetActiveQuest();
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             if (q != null && q.QuestId == LastQuestId)
             {
                 var step = QuestManager.GetQuestSequence(q.QuestId);
@@ -265,6 +267,12 @@ namespace QuestShare.Common
             Log.Debug($"Getting text sheet for quest {q.Id} - RowID: {q.RowId}");
             var dir = qid.Substring(qid.Length - 5, 3);
             return DataManager.GetExcelSheet<QuestDialogue>(name: $"quest/{dir}/{qid}");
+        }
+
+        public SeString GetFullMapLink(byte step)
+        {
+            var payload = GetMapLink(step);
+            return SeString.CreateMapLink(payload.Map.Value.TerritoryType.RowId, payload.Map.RowId, payload.RawX, payload.RawY);
         }
     }
 }

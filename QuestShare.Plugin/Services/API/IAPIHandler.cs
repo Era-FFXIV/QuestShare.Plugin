@@ -8,7 +8,7 @@ namespace QuestShare.Services.API
         Task HandleResponse(IResponse response);
         void InvokeHandler(IAPIHandler handler, IRequest request)
         {
-            _ = ((ApiService)Plugin.GetService<ApiService>()).Invoke(Method, request);
+            _ = Plugin.GetService<ApiService>().Invoke(Method, request);
         }
     }
 }

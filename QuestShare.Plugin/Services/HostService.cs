@@ -1,6 +1,6 @@
 namespace QuestShare.Services
 {
-    internal class HostService : IService
+    internal static class HostService
     {
         internal static Objects.OwnedSession? Session => ConfigurationManager.Instance.OwnedSession;
         internal static bool HostEnabled => ConfigurationManager.Instance.EnableHosting;
@@ -12,15 +12,7 @@ namespace QuestShare.Services
         internal static bool AllowJoins => Session?.AllowJoins ?? true;
         internal static bool SkipPartyCheck => Session?.SkipPartyCheck ?? false;
 
-        public void Initialize()
-        {
-        }
-
-        public void Shutdown()
-        {
-        }
-
-        public void Start(string shareCode)
+        public static void Start(string shareCode)
         {
             var session = new Objects.Session { OwnerCharacterId = PlayerState.ContentId.ToString().SaltedHash(shareCode), ShareCode = shareCode, ActiveQuestId = ActiveQuestId, ActiveQuestStep = ActiveQuestStep };
             var ownedSession = new Objects.OwnedSession { 
@@ -41,15 +33,13 @@ namespace QuestShare.Services
             ActiveSession.ActiveQuestId = questId;
             ActiveSession.ActiveQuestStep = questStep;
             Session!.Session = ActiveSession;
-            var party = (PartyService)Plugin.GetService<PartyService>();
-            var members = party.GetPartyMembers(ActiveSession);
+            var members = PartyService.GetPartyMembers(ActiveSession);
             ApiService.DispatchUpdate(Session, members);
         }
 
-        private void ConfigChange()
+        private static void ConfigChange()
         {
-            var party = (PartyService)Plugin.GetService<PartyService>();
-            var members = party.GetPartyMembers(ActiveSession!);
+            var members = PartyService.GetPartyMembers(ActiveSession!);
             ApiService.DispatchConfigChange(Session!, members);
         }
 
@@ -59,12 +49,11 @@ namespace QuestShare.Services
             {
                 return;
             }
-            var party = (PartyService)Plugin.GetService<PartyService>();
-            var members = party.GetPartyMembers(ActiveSession);
+            var members = PartyService.GetPartyMembers(ActiveSession);
             ApiService.DispatchConfigChange(Session!, members);
         }
 
-        public void SetIsActive(bool isActive)
+        public static void SetIsActive(bool isActive)
         {
             if (Session == null || ActiveSession == null)
             {
@@ -74,7 +63,7 @@ namespace QuestShare.Services
             ConfigChange();
         }
 
-        public void SetAllowJoins(bool allowJoins)
+        public static void SetAllowJoins(bool allowJoins)
         {
             if (Session == null || ActiveSession == null)
             {
@@ -84,7 +73,7 @@ namespace QuestShare.Services
             ConfigChange();
         }
 
-        public void SetSkipPartyCheck(bool skipPartyCheck)
+        public static void SetSkipPartyCheck(bool skipPartyCheck)
         {
             if (Session == null || ActiveSession == null)
             {
@@ -100,7 +89,6 @@ namespace QuestShare.Services
             {
                 return;
             }
-            var api = (ApiService)Plugin.GetService<ApiService>();
             ApiService.DispatchCancel();
         }
 
