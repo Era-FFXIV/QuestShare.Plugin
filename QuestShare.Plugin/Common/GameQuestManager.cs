@@ -272,18 +272,7 @@ namespace QuestShare.Common
         public SeString GetFullMapLink(byte step)
         {
             var payload = GetMapLink(step);
-            return new SeStringBuilder()
-                .AddUiForeground(0x0225)
-                .AddUiGlow(0x0226)
-                .Add(payload)
-                .AddUiForeground(500)
-                .AddUiGlow(501)
-                .AddText($"{(char)SeIconChar.LinkMarker}")
-                .AddText($" {payload.PlaceName ?? "Unknown Location"} {payload.CoordinateString}")
-                .AddUiGlowOff()
-                .AddUiForegroundOff()
-                .Add(RawPayload.LinkTerminator)
-                .Build();
+            return SeString.CreateMapLink(payload.Map.Value.TerritoryType.RowId, payload.Map.RowId, payload.RawX, payload.RawY);
         }
     }
 }
