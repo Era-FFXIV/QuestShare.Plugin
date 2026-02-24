@@ -4,7 +4,7 @@ namespace QuestShare.Services.API
     {
 
         public static void HandleDispatch(Objects.ShareCode shareCode) {
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             var request = new GroupJoin.Request()
             {
                 Token = ApiService.Token,
@@ -18,18 +18,18 @@ namespace QuestShare.Services.API
         {
             if (resp.Success && resp.Session != null)
             {
-                var share = (ShareService)Plugin.GetService<ShareService>();
+                var share = Plugin.GetService<ShareService>();
                 Log.Information("Successfully joined group.");
                 share.AddSession(resp.Session);
                 ShareService.RecheckShareCodes();
-                var api = (ApiService)Plugin.GetService<ApiService>();
+                var api = Plugin.GetService<ApiService>();
                 api.OnGroupJoin(new ApiService.GroupJoinEventArgs { Session = resp.Session, IsSuccess = true });
                 UiService.LastErrorMessage = "";
             }
             else
             {
                 Log.Error("Failed to join group: {Error}", resp.Error);
-                var api = (ApiService)Plugin.GetService<ApiService>();
+                var api = Plugin.GetService<ApiService>();
                 api.OnGroupJoin(new ApiService.GroupJoinEventArgs { Session = null, IsSuccess = false });
                 var friendlyError = resp.Error switch
                 {
@@ -47,7 +47,7 @@ namespace QuestShare.Services.API
 
         public static Task HandleBroadcast(GroupJoin.GroupJoinBroadcast broadcast)
         {
-            var share = (ShareService)Plugin.GetService<ShareService>();
+            var share = Plugin.GetService<ShareService>();
             share.AddSession(broadcast.Session);
             return Task.CompletedTask;
         }

@@ -4,9 +4,9 @@ namespace QuestShare.Services.API
     {
         public static void HandleDispatch()
         {
-            var api = (ApiService)Plugin.GetService<ApiService>();
-            var party = (PartyService)Plugin.GetService<PartyService>();
-            var share = (ShareService)Plugin.GetService<ShareService>();
+            var api = Plugin.GetService<ApiService>();
+            var party = Plugin.GetService<PartyService>();
+            var share = Plugin.GetService<ShareService>();
             var request = new Cancel.Request
             {
                 Token = ApiService.Token,
@@ -21,7 +21,7 @@ namespace QuestShare.Services.API
         {
             if (cancelResponse.Success)
             {
-                var share = (ShareService)Plugin.GetService<ShareService>();
+                var share = Plugin.GetService<ShareService>();
                 ConfigurationManager.Instance.OwnedSession = null;
                 UiService.LastErrorMessage = "";
             }
@@ -34,7 +34,7 @@ namespace QuestShare.Services.API
 
         public static Task HandleBroadcast(Cancel.CancelBroadcast cancelBroadcast)
         {
-            var share = (ShareService)Plugin.GetService<ShareService>();
+            var share = Plugin.GetService<ShareService>();
             share.RemoveSession(cancelBroadcast.ShareCode);
             return Task.CompletedTask;
         }

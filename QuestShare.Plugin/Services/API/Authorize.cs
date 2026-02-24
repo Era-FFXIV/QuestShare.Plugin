@@ -6,7 +6,7 @@ namespace QuestShare.Services.API
         {
             if (PlayerState.ContentId == 0)
             {
-                _ = ((ApiService)Plugin.GetService<ApiService>()).Disconnect();
+                _ = Plugin.GetService<ApiService>().Disconnect();
                 return;
             }
             var knownCodes = ShareService.ShareCodes.Select(s => s).ToList();
@@ -20,11 +20,11 @@ namespace QuestShare.Services.API
                 Version = Constants.Version,
                 ShareCodes = knownCodes,
             };
-            ((ApiService)Plugin.GetService<ApiService>()).Invoke(nameof(Authorize), request).ConfigureAwait(false);
+            Plugin.GetService<ApiService>().Invoke(nameof(Authorize), request).ConfigureAwait(false);
         }
         public static Task HandleResponse(Authorize.Response response)
         {
-            var share = (ShareService)Plugin.GetService<ShareService>();
+            var share = Plugin.GetService<ShareService>();
             if (response.Success)
             {
                 ConfigurationManager.Instance.Token = response.Token;
@@ -53,7 +53,7 @@ namespace QuestShare.Services.API
             }
             else
             {
-                var api = ((ApiService)Plugin.GetService<ApiService>());
+                var api = Plugin.GetService<ApiService>();
                 Log.Error("Failed to authorize: {Error}", response.Error);
                 UiService.LastErrorMessage = $"Failed to authorize: {response.Error}";
                 _ = api.Disconnect();

@@ -65,7 +65,7 @@ namespace QuestShare.Services
             }
         }
 
-        public List<string> GetPartyMembers(Objects.Session session)
+        public static List<string> GetPartyMembers(Objects.Session session)
         {
             var members = new List<string>();
             foreach (var member in PartyList)

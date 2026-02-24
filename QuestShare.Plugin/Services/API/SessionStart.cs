@@ -4,7 +4,7 @@ namespace QuestShare.Services.API
     {
         public static void HandleDispatch(Objects.OwnedSession session)
         {
-            var api = (ApiService)Plugin.GetService<ApiService>();
+            var api = Plugin.GetService<ApiService>();
             var request = new SessionStart.Request
             {
                 Version = Constants.Version,
@@ -39,7 +39,7 @@ namespace QuestShare.Services.API
             {
                 Log.Error($"Failed to start session: {response.Error}");
                 UiService.LastErrorMessage = $"Failed to start session: {response.Error}";
-                _ = ((ApiService)Plugin.GetService<ApiService>()).Disconnect();
+                _ = Plugin.GetService<ApiService>().Disconnect();
             }
         }
     }

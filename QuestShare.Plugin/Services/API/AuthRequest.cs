@@ -5,7 +5,7 @@ namespace QuestShare.Services.API
 
         public static Task HandleResponse(AuthRequest.Response response)
         {
-            var api = ((ApiService)Plugin.GetService<ApiService>());
+            var api = Plugin.GetService<ApiService>();
             ApiService.DispatchAuthorize();
             return Task.CompletedTask;
         }

@@ -18,12 +18,16 @@ namespace QuestShare.Windows.MiniWindow
             };
         }
 
-        private static ApiService ApiService => (ApiService)Plugin.GetService<ApiService>();
-        private static ShareService ShareService => (ShareService)Plugin.GetService<ShareService>();
+        private static ApiService ApiService => Plugin.GetService<ApiService>();
+        private static ShareService ShareService => Plugin.GetService<ShareService>();
 
         public string ShareCode { get; private set; } = string.Empty;
         private Objects.Session? Session => ShareService.Sessions.FirstOrDefault(s => s.ShareCode == ShareCode);
         
+        public Objects.Session? GetSession()
+        {
+            return Session;
+        }
 
         public void SetSession(string shareCode)
         {
