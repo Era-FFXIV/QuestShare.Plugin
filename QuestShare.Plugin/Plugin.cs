@@ -11,7 +11,7 @@ namespace QuestShare;
 public sealed class Plugin : IDalamudPlugin
 {
     public static string Name => "Quest Share";
-    public static string Version => "1.1.0.0";
+    public static string Version => "1.2.0.0";
     public static string PluginDataPath { get; private set; } = null!;
     internal static ConfigurationManager Configuration { get; private set; } = null!;
     private static ServiceProvider _serviceProvider = null!;
