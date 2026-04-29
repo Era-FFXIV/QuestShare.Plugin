@@ -15,7 +15,7 @@ namespace QuestShare.Services
         }
 
         public long PartyId { get; private set; }
-        private List<long> PartyMembers { get; set; } = [];
+        private List<ulong> PartyMembers { get; set; } = [];
 
         private void OnFramework(IFramework framework)
         {
